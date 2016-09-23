@@ -1,11 +1,12 @@
 {
-    "name": "katzgrau/klogger",
-    "version": "1.2.0",
-    "description": "A Simple Logging Class",
+    "name": "10quality/wpmvc-logger",
+    "version": "2.0.0",
+    "description": "KLogger for Wordpress MVC.",
     "keywords": ["logging"],
     "require": {
         "php": ">=5.3",
-        "psr/log": "1.0.0"
+        "psr/log": "1.0.0",
+        "10quality/wp-file": "0.9.*"
     },
     "require-dev": {
         "phpunit/phpunit": "4.0.*"
@@ -19,11 +20,22 @@
         {
             "name": "Dan Horrigan",
             "email": "dan@dhorrigan.com"
+        },
+        {
+            "name": "10 Quality",
+            "email": "info@10quality.com",
+            "homepage": "http://www.10quality.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Alejandro Mostajo",
+            "email": "amostajo@gmail.com",
+            "role": "Developer"
         }
     ],
     "autoload": {
         "psr-4": {
-            "Katzgrau\\KLogger\\": "src/"
+            "WPMVC\\KLogger\\": "src/"
         },
         "classmap": ["src/"]
     }

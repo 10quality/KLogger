@@ -1,10 +1,11 @@
 <?php
-namespace Katzgrau\KLogger;
+namespace WPMVC\KLogger;
 
 use DateTime;
 use RuntimeException;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LogLevel;
+use TenQuality\WP\File;
 
 /**
  * Finally, a light, permissions-checking logging class.
@@ -18,9 +19,10 @@ use Psr\Log\LogLevel;
  * $log->debug('x = 5'); //Prints nothing due to current severity threshhold
  *
  * @author  Kenny Katzgrau <katzgrau@gmail.com>
+ * @author  Alejandro Mostajo <amostajo@gmail.com>
  * @since   July 26, 2008
  * @link    https://github.com/katzgrau/KLogger
- * @version 1.0.0
+ * @version 2.0.0
  */
 
 /**
@@ -37,7 +39,7 @@ class Logger extends AbstractLogger
      *
      * @var array
      */
-    protected $options = array (
+    protected $options = array(
         'extension'      => 'txt',
         'dateFormat'     => 'Y-m-d G:i:s.u',
         'filename'       => false,
@@ -159,22 +161,24 @@ class Logger extends AbstractLogger
     }
 
     /**
+     * @since 2.0.0 Use WP/File instead.
      * @param $writeMode
      *
      * @internal param resource $fileHandle
      */
     public function setFileHandle($writeMode) {
-        $this->fileHandle = fopen($this->logFilePath, $writeMode);
+        $this->fileHandle = File::auth();
     }
 
 
     /**
      * Class destructor
+     * @since 2.0.0 Use WP/File instead.
      */
     public function __destruct()
     {
         if ($this->fileHandle) {
-            fclose($this->fileHandle);
+            $this->fileHandle = null;
         }
     }
 
@@ -217,6 +221,7 @@ class Logger extends AbstractLogger
 
     /**
      * Writes a line to the log without prepending a status or timestamp
+     * @since 2.0.0 Use of WP\File instead, removed flush.
      *
      * @param string $message Line to write to the log
      * @return void
@@ -224,15 +229,13 @@ class Logger extends AbstractLogger
     public function write($message)
     {
         if (null !== $this->fileHandle) {
-            if (fwrite($this->fileHandle, $message) === false) {
+            $content = $this->fileHandle->read($this->logFilePath);
+            $message = empty($content) ? $message : $content.$message;
+            if ($this->fileHandle->write($this->logFilePath, $message) === false) {
                 throw new RuntimeException('The file could not be written to. Check that appropriate permissions have been set.');
             } else {
                 $this->lastLine = trim($message);
                 $this->logLineCount++;
-
-                if ($this->options['flushFrequency'] && $this->logLineCount % $this->options['flushFrequency'] === 0) {
-                    fflush($this->fileHandle);
-                }
             }
         }
     }
