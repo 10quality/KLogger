@@ -1,7 +1,7 @@
 {
     "name": "10quality/wpmvc-logger",
     "version": "2.0.0",
-    "description": "KLogger for Wordpress MVC.",
+    "description": "KLogger for WordPress MVC.",
     "keywords": ["logging"],
     "require": {
         "php": ">=5.3",
